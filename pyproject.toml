@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "cluttercatcher"
+version = "0.1.0"
+description = "A tool to clean unused files, imports, and dependencies from projects."
+authors = ["Asfaq Ahmed <asfaqahmed128@gmail.com>"]
+license = "MIT"
+packages = [{include = "clutter_catcher"}]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<4.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+black = "^23.7.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+cluttercatcher = "clutter_catcher.cli:main"
