@@ -1,8 +1,9 @@
 import click
 from clutter_catcher.analyzer import FileAnalyzer
+from clutter_catcher.utils import validate_project_path
 
 @click.command()
-@click.argument("project_path")
+@click.argument("project_path", callback=validate_project_path)
 def main(project_path):
     analyzer = FileAnalyzer(project_path)
 
