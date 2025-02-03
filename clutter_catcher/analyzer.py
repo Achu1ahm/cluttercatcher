@@ -66,7 +66,25 @@ class FileAnalyzer:
                 matches = re.findall(r'(?:<script.*?src|<link.*?href)=["\'](.*?)["\']', content)
                 print("matches",matches)
                 print("*"*15)
-                referenced_files.update(os.path.abspath(os.path.join(self.project_path, m)) for m in matches)
+                # Django static template tag references
+                static_matches = re.findall(r'{%\s*static\s+["\']([^"\']+)["\']', content)
+                
+                for match in matches + static_matches:
+                    # Handle both absolute and relative paths
+                    if match.startswith('/'):
+                        match = match[1:]
+                    
+                    # Look for the file in common static directories
+                    possible_paths = [
+                        os.path.join(self.project_path, 'static', match),
+                        os.path.join(self.project_path, 'static-assets', match),
+                        os.path.join(self.project_path, match)
+                    ]
+                    
+                    for path in possible_paths:
+                        if os.path.exists(path):
+                            referenced_files.add(os.path.abspath(path))
+                            break
         
         # CSS: Detect @import
         for file in css_files:
