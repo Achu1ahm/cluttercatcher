@@ -1,4 +1,6 @@
 import os
+import re
+import click
 
 def find_file(root_dir, filename):
     """Recursively search for a file in the project directory."""
@@ -7,3 +9,25 @@ def find_file(root_dir, filename):
             return os.path.join(dirpath, filename)
     return None  # Return None if the file is not found
 
+def validate_project_path(ctx, param, value):
+    print("nick")
+    if not os.path.exists(value):
+        raise click.BadParameter(f"The path '{value}' does not exist.")
+    return value
+
+def remove_comments(content: str, file_type: str ) -> str:
+
+    if file_type == "py":
+        content = re.sub(r'#.*', '', content)  # Remove single-line comments
+        content = re.sub(r'""".*?"""|\'\'\'.*?\'\'\'', '', content, flags=re.DOTALL)  # Remove multi-line comments
+    elif file_type == "html":
+        # Remove HTML comments
+        content = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
+    elif file_type == "css":
+        # Remove CSS comments
+        content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+    elif file_type == "js":
+        # Remove JavaScript comments
+        content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+        content = re.sub(r'//.*', '', content)  # Remove single-line comments
+    return content

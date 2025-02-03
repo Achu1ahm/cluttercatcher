@@ -1,7 +1,7 @@
 import os
 import re
 from typing import List, Set
-from clutter_catcher.utils import find_file
+from clutter_catcher.utils import find_file,remove_comments
 
 EXCLUDED_DIRS = {'.git', 'node_modules', '.idea', '__pycache__', 'venv', 'dist', 'build','libs'}    
 EXCLUDED_FILES = {'requirements.txt', '.gitignore', '.env', 'poetry.lock', 'package-lock.json', "LICENSE", "README.md", "Readme.md", "__init__.py" }
@@ -35,6 +35,7 @@ class FileAnalyzer:
         for file in python_files:
             with open(file, 'r', encoding='utf-8', errors='replace') as f:
                 content = f.read()
+                content = remove_comments(content,"py")  # Remove commented lines before regex
                 matches = re.findall(r'from\s+(\S+)|import\s+(\S+)', content)
                 modules = {m.replace('.', '/') + '.py' for tup in matches for m in tup if m}
                 referenced_files.update(os.path.join(self.project_path, mod) for mod in modules)
@@ -61,6 +62,7 @@ class FileAnalyzer:
             print("file scanning",file)
             with open(file, 'r', encoding='utf-8', errors='replace') as f:
                 content = f.read()
+                content = remove_comments(content,"html") 
                 matches = re.findall(r'(?:<script.*?src|<link.*?href)=["\'](.*?)["\']', content)
                 print("matches",matches)
                 print("*"*15)
@@ -69,13 +71,17 @@ class FileAnalyzer:
         # CSS: Detect @import
         for file in css_files:
             with open(file, 'r', encoding='utf-8', errors='replace') as f:
-                matches = re.findall(r'@import\s+["\'](.*?)["\']', f.read())
+                content = f.read()
+                content = remove_comments(content,"css")
+                matches = re.findall(r'@import\s+["\'](.*?)["\']', content) 
                 referenced_files.update(os.path.abspath(os.path.join(self.project_path, m)) for m in matches)
         
         # JS: Detect imports and requires
         for file in js_files:
             with open(file, 'r', encoding='utf-8', errors='replace') as f:
-                matches = re.findall(r'(?:import.*?from|require)\(["\'](.*?)["\']\)', f.read())
+                content = f.read()
+                content = remove_comments(content,"js")
+                matches = re.findall(r'(?:import.*?from|require)\(["\'](.*?)["\']\)', content)
                 referenced_files.update(os.path.abspath(os.path.join(self.project_path, m)) for m in matches)
         
         return referenced_files
