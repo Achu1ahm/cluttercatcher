@@ -86,13 +86,22 @@ class FileAnalyzer:
                             referenced_files.add(os.path.abspath(path))
                             break
         
-        # CSS: Detect @import
+        # CSS & SCSS: Detect @import and @use
         for file in css_files:
             with open(file, 'r', encoding='utf-8', errors='replace') as f:
                 content = f.read()
                 content = remove_comments(content,"css")
-                matches = re.findall(r'@import\s+["\'](.*?)["\']', content) 
-                referenced_files.update(os.path.abspath(os.path.join(self.project_path, m)) for m in matches)
+                matches = re.findall(r'@(?:import|use|forward)\s+(?:url\(["\']?|["\'])(.*?)(?:["\']?\)|["\'])\s*;', content, re.IGNORECASE) 
+                for path in matches:
+
+                 if path.startswith(('http://', 'https://', '//')):
+                    continue
+
+                if not path.startswith(("./", "/","../")):
+                    path = "./" + path
+                
+                abs_path = os.path.abspath(os.path.join(os.path.dirname(file), path))
+                referenced_files.add(abs_path)
         
         # JS: Detect imports and requires
         for file in js_files:
