@@ -1,7 +1,8 @@
 import os
 import re
 from typing import List, Set
-from clutter_catcher.utils import find_file,remove_comments
+from clutter_catcher.utils import find_file, remove_comments
+from clutter_catcher.imports_checker import resolve_file_path
 
 EXCLUDED_DIRS = {'.git', 'node_modules', '.idea', '__pycache__', 'venv', 'dist', 'build','libs'}    
 EXCLUDED_FILES = {'requirements.txt', '.gitignore', '.env', 'poetry.lock', 'package-lock.json', "LICENSE", "README.md", "Readme.md", "__init__.py" }
@@ -68,23 +69,11 @@ class FileAnalyzer:
                 print("*"*15)
                 # Django static template tag references
                 static_matches = re.findall(r'{%\s*static\s+["\']([^"\']+)["\']', content)
-                
                 for match in matches + static_matches:
-                    # Handle both absolute and relative paths
-                    if match.startswith('/'):
-                        match = match[1:]
-                    
-                    # Look for the file in common static directories
-                    possible_paths = [
-                        os.path.join(self.project_path, 'static', match),
-                        os.path.join(self.project_path, 'static-assets', match),
-                        os.path.join(self.project_path, match)
-                    ]
-                    
-                    for path in possible_paths:
-                        if os.path.exists(path):
-                            referenced_files.add(os.path.abspath(path))
-                            break
+                    resolved_path = resolve_file_path(self.project_path, file, match)
+                    if resolved_path:
+
+                        referenced_files.add(os.path.abspath(resolved_path))
         
         # CSS & SCSS: Detect @import and @use
         for file in css_files:
