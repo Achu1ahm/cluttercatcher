@@ -1,6 +1,5 @@
-import os
 import re
-import click
+import os
 
 def find_file(root_dir, filename):
     """Recursively search for a file in the project directory."""
@@ -9,11 +8,6 @@ def find_file(root_dir, filename):
             return os.path.join(dirpath, filename)
     return None  # Return None if the file is not found
 
-def validate_project_path(ctx, param, value):
-    print("nick")
-    if not os.path.exists(value):
-        raise click.BadParameter(f"The path '{value}' does not exist.")
-    return value
 
 def remove_comments(content: str, file_type: str ) -> str:
 
