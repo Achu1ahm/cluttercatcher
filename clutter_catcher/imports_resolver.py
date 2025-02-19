@@ -1,11 +1,12 @@
 import os
+import re
 from glob import glob
 from clutter_catcher.utils import find_file
 
 def validate_project_path(ctx, param, value):
     if not os.path.exists(value):
         raise click.BadParameter(f"The path '{value}' does not exist.")
-    return value
+    return value    
 
 def resolve_file_path(project_path, current_file, referenced_path):
     """Resolve file path dynamically, searching entire project directory"""
@@ -24,6 +25,7 @@ def resolve_file_path(project_path, current_file, referenced_path):
         if matches:
             # Return first match (prioritize shallowest directory)
             return os.path.abspath(matches[0])
+    
     else:
         # Handle relative paths from current file's directory
         current_dir = os.path.dirname(current_file)
@@ -33,5 +35,4 @@ def resolve_file_path(project_path, current_file, referenced_path):
         if os.path.commonpath([project_path, resolved_path]) == project_path:
             if os.path.exists(resolved_path):
                 return os.path.abspath(resolved_path)
-    
     return None
