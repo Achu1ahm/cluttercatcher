@@ -1,11 +1,13 @@
 [tool.poetry]
 name = "cluttercatcher"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool to clean unused files, imports, and dependencies from projects."
 authors = ["Asfaq Ahmed <asfaqahmed128@gmail.com>"]
 license = "MIT"
 packages = [{include = "clutter_catcher"}]
 readme = "README.md"
+homepage = "https://github.com/Achu1ahm/cluttercatcher"
+repository = "https://github.com/Achu1ahm/cluttercatcher"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0"

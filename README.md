@@ -1,12 +1,10 @@
-# 🚀 ClutterCatcher  
+# ClutterCatcher  
 
 **ClutterCatcher** is a powerful Python tool that helps you clean up unused files, imports, and dependencies from your projects, making them leaner and more efficient.  
 
 ## 🎯 Features  
 ✅ Detect and remove **unused files** from your project  
-✅ Identify **unused imports** in Python scripts    
-✅ Interactive or automatic cleanup mode  
-✅ Supports multiple file types and project structures  
+✅ Supports multiple file types and project structures      
 
 ## 📦 Installation  
 
@@ -16,11 +14,13 @@ Install ClutterCatcher using **pip**:
 pip install cluttercatcher
 ```
 
-Or if you are using Poetry:  
+## 🚀 Usage
 
+To use ClutterCatcher, simply run the following command:
 ```sh
-poetry add cluttercatcher
+cluttercatcher <path_to_project>
 ```
+
 ## 📜 License
 
 ClutterCatcher is licensed under the MIT License.
